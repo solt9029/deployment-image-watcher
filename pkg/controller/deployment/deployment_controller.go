@@ -1,8 +1,10 @@
 package deployment
 
 import (
+	"github.com/nlopes/slack"
 	appsv1 "k8s.io/api/apps/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"os"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
@@ -52,5 +54,9 @@ type ReconcileDeployment struct {
 func (r *ReconcileDeployment) Reconcile(request reconcile.Request) (reconcile.Result, error) {
 	reqLogger := log.WithValues("Request.Namespace", request.Namespace, "Request.Name", request.Name)
 	reqLogger.Info("Reconciling")
+
+	api := slack.New(os.Getenv("SLACK_BOT_USER_OAUTH_ACCESS_TOKEN"))
+	api.PostMessage("popper", slack.MsgOptionText("🎉", true))
+
 	return reconcile.Result{}, nil
 }
