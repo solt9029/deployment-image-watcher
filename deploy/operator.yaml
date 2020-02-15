@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-image-watcher
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: deployment-image-watcher
+  template:
+    metadata:
+      labels:
+        name: deployment-image-watcher
+    spec:
+      serviceAccountName: deployment-image-watcher
+      containers:
+        - name: deployment-image-watcher
+          # Replace this with the built image name
+          image: REPLACE_IMAGE
+          command:
+          - deployment-image-watcher
+          imagePullPolicy: Always
+          env:
+            - name: WATCH_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OPERATOR_NAME
+              value: "deployment-image-watcher"

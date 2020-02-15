@@ -1,0 +1,11 @@
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: deployment-image-watcher
+subjects:
+- kind: ServiceAccount
+  name: deployment-image-watcher
+roleRef:
+  kind: Role
+  name: deployment-image-watcher
+  apiGroup: rbac.authorization.k8s.io
