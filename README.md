@@ -6,6 +6,8 @@
 ## using deployment
 
 ```sh
+vi secret.yaml # add your slack api token.
+vi operator.yaml # add your target slack channel.
 kubectl apply -f deploy/
 ```
 
