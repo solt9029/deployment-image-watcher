@@ -1,6 +1,6 @@
 # deployment-image-watcher
 
-- deployment-image-watcher is a custom controller that notify deployment's template container image update to slack channel.
+- deployment-image-watcher is a custom controller that notifies you of deployment's template container image update on your slack channel.
 - this custom controller has been created with operator-sdk (v0.15.2).
 
 ## using deployment
