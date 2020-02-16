@@ -33,28 +33,20 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 		return err
 	}
 
-	slackToken := os.Getenv("SLACK_TOKEN")
-	slackChannel := os.Getenv("SLACK_CHANNEL")
-	slackClient := slack.New(slackToken)
+	slackClient := slack.New(os.Getenv("SLACK_TOKEN"))
 
 	source := &source.Kind{Type: &appsv1.Deployment{}}
 	handler := &handler.EnqueueRequestForObject{}
 	predicate := predicate.Funcs{
 		UpdateFunc: func(e event.UpdateEvent) bool {
-			oldContainers := e.MetaOld.(*appsv1.Deployment).Spec.Template.Spec.Containers
-			newContainers := e.MetaNew.(*appsv1.Deployment).Spec.Template.Spec.Containers
-
-			for oldIndex := 0; oldIndex < len(oldContainers); oldIndex++ {
-				oldContainer := oldContainers[oldIndex]
-				for newIndex := 0; newIndex < len(newContainers); newIndex++ {
-					newContainer := newContainers[newIndex]
+			for _, oldContainer := range e.MetaOld.(*appsv1.Deployment).Spec.Template.Spec.Containers {
+				for _, newContainer := range e.MetaNew.(*appsv1.Deployment).Spec.Template.Spec.Containers {
 					if oldContainer.Name == newContainer.Name && oldContainer.Image != newContainer.Image {
 						messageText := createMessage(newContainer.Name, newContainer.Image, oldContainer.Image)
-						slackClient.PostMessage(slackChannel, slack.MsgOptionText(messageText, true))
+						slackClient.PostMessage(os.Getenv("SLACK_CHANNEL"), slack.MsgOptionText(messageText, true))
 					}
 				}
 			}
-
 			return true
 		},
 	}
