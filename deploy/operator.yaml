@@ -15,8 +15,7 @@ spec:
       serviceAccountName: deployment-image-watcher
       containers:
         - name: deployment-image-watcher
-          # Replace this with the built image name
-          image: REPLACE_IMAGE
+          image: solt9029/deployment-image-watcher:latest
           command:
           - deployment-image-watcher
           imagePullPolicy: Always
@@ -31,3 +30,10 @@ spec:
                   fieldPath: metadata.name
             - name: OPERATOR_NAME
               value: "deployment-image-watcher"
+            - name: SLACK_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: deployment-image-watcher
+                  key: SLACK_TOKEN
+            - name: SLACK_CHANNEL
+              value: "general"
